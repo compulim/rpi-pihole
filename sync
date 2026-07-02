@@ -1,15 +1,18 @@
 #!/usr/bin/env bash
 
-scp -i /home/compulim/.ssh/id_ed25519 -r compulim@dns1.localdomain:/home/compulim/repos/pihole/etc/cloudflared/ /home/compulim/repos/pihole/etc/cloudflared/
-scp -i /home/compulim/.ssh/id_ed25519 -r compulim@dns1.localdomain:/home/compulim/repos/pihole/etc/dnsmasq.d/ /home/compulim/repos/pihole/etc/dnsmasq.d/
+cd ~/repos/pihole/
+
+scp -i ~/.ssh/id_ed25519 -r compulim@dns1.localdomain:/home/compulim/repos/pihole/etc/cloudflared/ ~/repos/pihole/etc/cloudflared/
+scp -i ~/.ssh/id_ed25519 -r compulim@dns1.localdomain:/home/compulim/repos/pihole/etc/dnsmasq.d/ ~/repos/pihole/etc/dnsmasq.d/
 rsync \
-  -e "ssh -i /home/compulim/.ssh/id_ed25519" \
+  -e "ssh -i ~/.ssh/id_ed25519" \
   -av \
   --progress \
   --exclude='config_backups/' \
   --exclude='corrupted/' \
   --exclude='logrotate' \
-  compulim@dns1.localdomain:/home/compulim/repos/pihole/etc/pihole/ \
-  /home/compulim/repos/pihole/etc/pihole/
+  compulim@dns1.localdomain: /repos/pihole/etc/pihole/ \
+  ~/repos/pihole/etc/pihole/
 
-docker compose exec pihole pihole restartdns
+# docker compose exec pihole pihole restartdns
+docker compose restart pihole
