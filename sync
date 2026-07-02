@@ -2,6 +2,14 @@
 
 scp -i /home/compulim/.ssh/id_ed25519 -r compulim@dns1.localdomain:/home/compulim/repos/pihole/etc/cloudflared/ /home/compulim/repos/pihole/etc/cloudflared/
 scp -i /home/compulim/.ssh/id_ed25519 -r compulim@dns1.localdomain:/home/compulim/repos/pihole/etc/dnsmasq.d/ /home/compulim/repos/pihole/etc/dnsmasq.d/
-rsync -e "ssh -i /home/compulim/.ssh/id_ed25519" -av --progress --exclude='logrotate' compulim@dns1.localdomain:/home/compulim/repos/pihole/etc/pihole/ /home/compulim/repos/pihole/etc/pihole/
+rsync \
+  -e "ssh -i /home/compulim/.ssh/id_ed25519" \
+  -av \
+  --progress \
+  --exclude='config_backups/' \
+  --exclude='corrupted/' \
+  --exclude='logrotate' \
+  compulim@dns1.localdomain:/home/compulim/repos/pihole/etc/pihole/ \
+  /home/compulim/repos/pihole/etc/pihole/
 
-docker-compose exec pihole pihole restartdns
+docker compose exec pihole pihole restartdns
