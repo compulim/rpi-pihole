@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   pihole:
     cap_add:
@@ -30,13 +28,27 @@ services:
       - ./etc/pihole:/etc/pihole
       - ./etc/dnsmasq.d:/etc/dnsmasq.d
 
-  cloudflared:
+  # cloudflared:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.cloudflared
+  #   environment:
+  #     PRIMARY_DNS: https://1.1.1.1/dns-query
+  #     SECONDARY_DNS: https://1.0.0.1/dns-query
+  #   expose:
+  #     - 53/tcp
+  #     - 53/udp
+  #   networks:
+  #     pihole:
+  #       ipv4_address: 10.53.0.3
+  #   restart: unless-stopped
+  #   volumes:
+  #     - ./etc/cloudflared:/etc/cloudflared
+
+  dnscrypt-proxy:
     build:
       context: .
-      dockerfile: Dockerfile.cloudflared
-    environment:
-      PRIMARY_DNS: https://1.1.1.1/dns-query
-      SECONDARY_DNS: https://1.0.0.1/dns-query
+      dockerfile: Dockerfile.dnscrypt-proxy
     expose:
       - 53/tcp
       - 53/udp
@@ -45,7 +57,9 @@ services:
         ipv4_address: 10.53.0.3
     restart: unless-stopped
     volumes:
-      - ./etc/cloudflared:/etc/cloudflared
+      - ./dnscrypt-proxy-config:/etc/dnscrypt-proxy-config
+      - ./var/cache/dnscrypt-proxy:/var/cache/dnscrypt-proxy
+      - ./var/log/dnscrypt-proxy:/var/log/dnscrypt-proxy
 
   autoheal:
     # 2026-04-02: autoheal:latest is currently broken, incomplete script at /docker_entrypoint
