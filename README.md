@@ -1,8 +1,8 @@
-# pihole-cloudflared
+# rpi-pihole
 
-This will run both [Pi-hole](https://pi-hole.net/) and [`cloudflared`](https://hub.docker.com/r/cloudflare/cloudflared) at the same time.
+This will run both [Pi-hole](https://pi-hole.net/) and CloudFlare via [`dnscrypt-proxy`](https://github.com/dnscrypt/dnscrypt-proxy/) at the same time.
 
-`cloudflared` uses DNS-over-HTTPS, so no one could peak into what you resolved.
+`dnscrypt-proxy` uses DNS-over-HTTPS, so no one could peak into what you resolved.
 
 ## Install Docker and Docker Compose
 
@@ -15,11 +15,6 @@ curl -sSL https://get.docker.com | sh
 sudo systemctl enable docker
 sudo systemctl start docker
 sudo usermod -aG docker pi
-
-# Cache a version of cloudflared just in case if no DNS is available
-
-cd external
-curl -LO https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-arm64.deb
 
 # Reboot needed
 
@@ -52,9 +47,15 @@ docker compose exec pihole pihole -a -p
 You will need `dig` which can be installed from `dnsutils`.
 
 ```sh
+# Test from local
 sudo apt install dnsutils
 
 dig github.com @localhost
+```
+
+```sh
+# Test from inside of Pi-Hole
+docker compose exec pihole dig github.com @10.53.0.3
 ```
 
 ### Update Gravity Database
@@ -86,7 +87,7 @@ sudo systemctl enable pihole
 sudo systemctl start pihole
 ```
 
-To update Pi-hole, run `sudo crontab -e` and reboot, or restart the Docker Compose service on a schedule. When the service is started, it will pull the latest [`pihole/pihole`](https://hub.docker.com/r/pihole/pihole) image and rebuild `cloudflared` with latest version.
+<!-- To update Pi-hole, run `sudo crontab -e` and reboot, or restart the Docker Compose service on a schedule. When the service is started, it will pull the latest [`pihole/pihole`](https://hub.docker.com/r/pihole/pihole) image and rebuild `cloudflared` with latest version. -->
 
 ## References
 
